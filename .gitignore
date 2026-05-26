@@ -1,0 +1,44 @@
+# dependencies
+node_modules
+.pnpm-store
+
+# build outputs
+dist
+out
+.next
+build
+cache
+
+# foundry
+packages/contracts/out
+packages/contracts/cache
+packages/contracts/broadcast
+
+# env files
+.env
+.env.local
+.env.production
+
+# keys & secrets
+*.pem
+*.key
+keystore/
+
+# logs
+*.log
+logs/
+
+# os
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/settings.json
+.idea
+
+# turbo
+.turbo
+
+# coverage
+coverage/
+lcov.info

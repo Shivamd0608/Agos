@@ -1,0 +1,42 @@
+{
+  "name": "@agos/sdk",
+  "version": "0.1.0",
+  "description": "Agos SDK — programmable payment OS for AI agents",
+  "keywords": ["ai-agents", "payments", "x402", "blockchain", "web3"],
+  "homepage": "https://agos.xyz",
+  "repository": { "type": "git", "url": "https://github.com/your-org/agos" },
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".":              { "import": "./dist/index.js", "require": "./dist/index.cjs" },
+    "./policy":       { "import": "./dist/policy/index.js" },
+    "./delegation":   { "import": "./dist/delegation/index.js" },
+    "./adapters/*":   { "import": "./dist/adapters/*.js" }
+  },
+  "main":   "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types":  "./dist/index.d.ts",
+  "files":  ["dist", "README.md", "CHANGELOG.md"],
+  "scripts": {
+    "build":     "tsup",
+    "dev":       "tsup --watch",
+    "test":      "vitest run",
+    "test:watch":"vitest",
+    "typecheck": "tsc --noEmit",
+    "lint":      "eslint src",
+    "clean":     "rm -rf dist"
+  },
+  "peerDependencies": {
+    "viem": ">=2.0.0"
+  },
+  "dependencies": {
+    "viem":  "^2.21.0",
+    "zod":   "^3.24.0",
+    "axios": "^1.7.0"
+  },
+  "devDependencies": {
+    "tsup":    "^8.3.0",
+    "vitest":  "^2.1.0",
+    "typescript": "^5.7.0"
+  }
+}

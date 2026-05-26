@@ -1,0 +1,29 @@
+{
+  "name": "agos",
+  "private": true,
+  "description": "Agos — Agent-to-Agent Payment OS",
+  "version": "0.0.1",
+  "packageManager": "pnpm@9.15.0",
+  "engines": { "node": ">=22.0.0", "pnpm": ">=9.0.0" },
+  "scripts": {
+    "build":     "turbo run build",
+    "dev":       "turbo run dev --parallel",
+    "test":      "turbo run test",
+    "lint":      "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "clean":     "turbo run clean",
+    "format":    "prettier --write \"**/*.{ts,tsx,sol,json,md}\"",
+    "contracts:test":   "cd packages/contracts && forge test",
+    "contracts:deploy": "cd packages/contracts && forge script script/DeployTestnet.s.sol",
+    "sdk:build":  "cd packages/sdk && pnpm build",
+    "sdk:publish": "cd packages/sdk && pnpm publish --access public",
+    "setup":     "bash scripts/setup.sh"
+  },
+  "devDependencies": {
+    "turbo":           "^2.3.0",
+    "prettier":        "^3.4.0",
+    "typescript":      "^5.7.0",
+    "@types/node":     "^22.0.0",
+    "eslint":          "^9.0.0"
+  }
+}

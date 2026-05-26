@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  # ── TypeScript: lint, typecheck, test ───────
+  ts-ci:
+    name: TypeScript CI
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: 9 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm turbo run lint typecheck build test
+
+  # ── Solidity: forge tests + Slither ─────────
+  contracts-ci:
+    name: Contracts CI
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { submodules: recursive }
+      - uses: foundry-rs/foundry-toolchain@v1
+      - name: Run forge tests
+        working-directory: packages/contracts
+        run: forge test --gas-report -vvv
+      - name: Run Slither
+        uses: crytic/slither-action@v0.4.0
+        with:
+          target: packages/contracts/src
+
+  # ── SDK publish dry-run ──────────────────────
+  sdk-publish-check:
+    name: SDK publish check
+    runs-on: ubuntu-latest
+    needs: [ts-ci]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: 9 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: cd packages/sdk && pnpm build
+      - run: cd packages/sdk && pnpm publish --dry-run --no-git-checks

@@ -1,0 +1,26 @@
+# Agos Codeowners
+# Format: pattern  @github-username
+
+# Global fallback
+*                              @agos-core
+
+# Smart contracts — blockchain engineer only
+/packages/contracts/           @agos-blockchain
+
+# SDK — agentic engineer
+/packages/sdk/                 @agos-agentic
+/packages/sdk-python/          @agos-agentic
+
+# Protocol shared package
+/packages/protocol/            @agos-blockchain @agos-agentic
+
+# Facilitator + indexer — backend
+/apps/facilitator/             @agos-backend
+/apps/indexer/                 @agos-backend
+
+# Dashboard — frontend
+/apps/dashboard/               @agos-frontend
+
+# Infra — devops
+/infra/                        @agos-devops
+/.github/                      @agos-devops
