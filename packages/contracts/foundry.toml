@@ -2,6 +2,7 @@
   src         = "src"
   out         = "out"
   libs        = ["lib"]
+  remappings  = ["@openzeppelin/=lib/openzeppelin-contracts/"]
   test        = "test"
   script      = "script"
   optimizer   = true
@@ -22,4 +23,4 @@
 [rpc_endpoints]
   base-sepolia = "${BASE_SEPOLIA_RPC_URL}"
   base         = "${BASE_RPC_URL}"
-  localhost    = "http://127.0.0.1:8545"
+  localhost    = "http://127.0.0.1:8545" 
