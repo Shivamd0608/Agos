@@ -7,10 +7,11 @@ interface IPolicyEngine {
 
     // ─── Events ───────────────────────────────────────────────────
     event PolicySet(bytes32 indexed agentId, address indexed owner);
+    event PolicyUpdated(bytes32 indexed agentId, address indexed owner); // ← distinguish update vs create
     event PolicyRevoked(bytes32 indexed agentId);
-    event PaymentEnforced(bytes32 indexed agentId, uint128 amount, address payee);
-    event ApprovalRequired(bytes32 indexed agentId, uint128 amount, address payee);
-    event PolicyViolation(bytes32 indexed agentId, string reason);
+    event PaymentEnforced(bytes32 indexed agentId, uint128 amount, address indexed payee);
+    event ApprovalRequired(bytes32 indexed agentId, uint128 amount, address indexed payee);
+    // removed PolicyViolation(string) — covered by custom errors below
 
     // ─── Errors ───────────────────────────────────────────────────
     error PolicyNotFound(bytes32 agentId);
@@ -21,6 +22,8 @@ interface IPolicyEngine {
     error ExceedsHourlyLimit(bytes32 agentId, uint128 attempted, uint128 limit);
     error PayeeNotAllowed(bytes32 agentId, address payee);
     error InvalidPolicy();
+    error TooManyPayees(uint256 provided, uint256 max);  // ← new
+    error ZeroAdmin();                                    // ← new
 
     // ─── Functions ────────────────────────────────────────────────
     function setPolicy(bytes32 agentId, PolicyLib.Policy calldata policy) external;
