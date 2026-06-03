@@ -33,6 +33,7 @@ contract PolicyEngineTest is Test {
             requireApprovalAbove: 8_000_000,    // 8 USDC needs approval
             expiresAt:            0,            // never expires
             active:               true,
+            exists:               true,
             allowedPayees:        payees
         });
     }
@@ -52,6 +53,22 @@ contract PolicyEngineTest is Test {
         vm.expectRevert();
         engine.setPolicy(agentId, _basicPolicy());
     }
+    function test_setPolicy_revertsInvalidPolicy() public {
+    PolicyLib.Policy memory p = _basicPolicy();
+
+    // Invalid:
+    // maxPerTransaction > maxPerHour
+    p.maxPerTransaction = 60_000_000;
+    p.maxPerHour = 50_000_000;
+
+    vm.prank(owner);
+
+    vm.expectRevert(
+        IPolicyEngine.InvalidPolicy.selector
+    );
+
+    engine.setPolicy(agentId, p);
+}
 
     // ─── enforce: happy path ──────────────────────────────────────
     function test_enforce_smallPayment_passes() public {
@@ -87,6 +104,19 @@ contract PolicyEngineTest is Test {
         engine.enforce(agentId, 11_000_000, payee);
     }
 
+function test_enforce_perTxLimit_exactBoundaryWorks() public {
+    vm.prank(owner);
+    engine.setPolicy(agentId, _basicPolicy());
+
+    bool needsApproval =
+        engine.enforce(
+            agentId,
+            10_000_000,
+            payee
+        );
+
+    assertTrue(needsApproval);
+}
     // ─── enforce: daily limit ─────────────────────────────────────
     function test_enforce_revertsWhenExceedsDailyLimit() public {
         vm.prank(owner);
@@ -127,6 +157,28 @@ contract PolicyEngineTest is Test {
         assertFalse(ok); // no approval needed, just checking it doesn't revert
     }
 
+function test_enforce_dailyLimit_exactBoundaryWorks() public {
+    vm.prank(owner);
+    engine.setPolicy(agentId, _basicPolicy());
+
+    // Exactly 100 USDC
+
+    for (uint256 i = 0; i < 10; i++) {
+        engine.enforce(
+            agentId,
+            10_000_000,
+            payee
+        );
+    }
+
+    PolicyLib.SpendRecord memory r =
+        engine.getSpendRecord(agentId);
+
+    assertEq(
+        r.dailyAmount,
+        100_000_000
+    );
+}
     // ─── enforce: hourly limit ────────────────────────────────────
     function test_enforce_revertsWhenExceedsHourlyLimit() public {
         vm.prank(owner);
